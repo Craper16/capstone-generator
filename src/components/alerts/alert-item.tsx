@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {Colors} from '../../utils/colors';
-import {dateFromNow, formatDate} from '../../utils/date-utils';
+import {dateFromNow} from '../../utils/date-utils';
 
 type AlertItemProps = {
   item: {
@@ -20,10 +20,7 @@ const AlertItem = ({item}: AlertItemProps) => {
     <View style={styles.container}>
       <Text style={styles.userText}>{item.user.name}</Text>
       <Text style={styles.alertText}>{item.alert}</Text>
-      <View style={styles.dateContainer}>
-        <Text style={styles.topDate}>{formatDate(item.date)}</Text>
-        <Text style={styles.bottomDate}>{dateFromNow(item.date)}</Text>
-      </View>
+      <Text style={styles.bottomDate}>{dateFromNow(item.date)}</Text>
     </View>
   );
 };
@@ -48,5 +45,10 @@ const styles = StyleSheet.create({
   alertText: {fontSize: 10, color: Colors.Black, fontWeight: '400', flex: 1},
   dateContainer: {justifyContent: 'space-between'},
   topDate: {color: Colors.Black, fontWeight: '400', fontSize: 5},
-  bottomDate: {fontSize: 5, color: Colors.Black, fontWeight: '700'},
+  bottomDate: {
+    fontSize: 5,
+    color: Colors.Black,
+    fontWeight: '700',
+    alignSelf: 'flex-end',
+  },
 });

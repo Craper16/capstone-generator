@@ -21,6 +21,7 @@ type TextInputProps<T extends FieldValues, U> = {
   textColor?: ColorValue;
   items?: U[];
   disabled?: boolean;
+  textSize?: number;
 };
 
 function DropdownInput<T extends FieldValues, U>({
@@ -33,6 +34,7 @@ function DropdownInput<T extends FieldValues, U>({
   textColor,
   items,
   disabled,
+  textSize,
 }: TextInputProps<T, U>) {
   const {field} = useController({control, name, defaultValue});
 
@@ -44,10 +46,18 @@ function DropdownInput<T extends FieldValues, U>({
       onPress={() => setIsOpen(prevIsOpen => !prevIsOpen)}
       style={[
         styles.container,
-        {backgroundColor: Colors.LightGray ?? backgroundColor},
+        {backgroundColor: backgroundColor ?? Colors.LightGray},
         style,
       ]}>
-      <Text style={[styles.text, {color: textColor ?? Colors.Black}]}>
+      <Text
+        style={[
+          styles.text,
+          {
+            color: textColor ?? Colors.Black,
+            fontSize: textSize ?? 20,
+            lineHeight: textSize ? textSize * 1.2 : 20 * 1.2,
+          },
+        ]}>
         {field.value ?? placeholder}
       </Text>
       <Text style={styles.indicatorStyle}>{'>'}</Text>

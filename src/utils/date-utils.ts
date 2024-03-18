@@ -23,3 +23,11 @@ export function formatDateToHoursAndMinutes(date?: Date) {
 
   return dayjs(date).format('HH:mm A');
 }
+
+export function getMonthAndYear(date?: Date) {
+  if (!date) {
+    return '';
+  }
+
+  return dayjs(date).format('MMMM YYYY');
+}

@@ -1,22 +1,21 @@
 import {Alert, Keyboard, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import {Colors} from '../utils/colors';
 import ScreenHeader from '../components/ui/screen-header';
 import TextInput from '../components/ui/text-input';
-import {useController, useForm} from 'react-hook-form';
-import Card from '../components/ui/card';
+import {useForm} from 'react-hook-form';
 import ElevatedCard from '../components/ui/elevated-card';
-import DocPicer, {DocumentPickerResponse} from 'react-native-document-picker';
+import {DocumentPickerResponse} from 'react-native-document-picker';
 import {StackScreenProps} from '@react-navigation/stack';
 import {HomeStackNavigatorParams} from '../navigation/home-stack-navigation';
-import DatePicker from 'react-native-date-picker';
-import {formatDate} from '../utils/date-utils';
+import DropdownInput from '../components/ui/dropdown-input';
 
 type AddAnnouncementsForm = {
   title: string;
   description: string;
   attachments: DocumentPickerResponse[];
   date: Date | null;
+  target: 'All' | 'Customers' | 'Employees';
 };
 
 type AddAnnouncementsProps = StackScreenProps<
@@ -27,25 +26,10 @@ type AddAnnouncementsProps = StackScreenProps<
 const AddAnnouncements = ({navigation}: AddAnnouncementsProps) => {
   const {control, handleSubmit} = useForm<AddAnnouncementsForm>({
     defaultValues: {
-      attachments: [],
-      date: null,
       description: '',
       title: '',
+      target: 'All',
     },
-  });
-
-  const [open, setOpen] = useState(false);
-
-  const {field} = useController({
-    control,
-    name: 'attachments',
-    defaultValue: [],
-  });
-
-  const {field: dateField} = useController({
-    control,
-    name: 'date',
-    defaultValue: null,
   });
 
   function onSubmit({
@@ -77,6 +61,16 @@ const AddAnnouncements = ({navigation}: AddAnnouncementsProps) => {
         />
       </View>
       <View style={styles.inputContainer}>
+        <Text style={styles.label}>Target:</Text>
+        <DropdownInput
+          control={control}
+          name="target"
+          placeholder="Target"
+          textColor={Colors.Black}
+          items={['All', 'Customers', 'Employees']}
+        />
+      </View>
+      <View style={styles.inputContainer}>
         <Text style={styles.label}>Description:</Text>
         <TextInput
           control={control}
@@ -87,53 +81,14 @@ const AddAnnouncements = ({navigation}: AddAnnouncementsProps) => {
           multiline
         />
       </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Attachments:</Text>
-        <Card
-          onPress={async () => {
-            try {
-              const res = await DocPicer.pick({allowMultiSelection: true});
 
-              field.onChange(res);
-            } catch (error) {
-              console.log(error);
-            }
-          }}>
-          <Text style={styles.addFromDeviceText}>Add From Device</Text>
-          {field.value.map(fi => (
-            <Text key={fi.uri} style={styles.addFromDeviceText}>
-              {fi.name}
-            </Text>
-          ))}
-        </Card>
-      </View>
       <View style={styles.bottomButtonContainer}>
-        <ElevatedCard
-          textStyle={styles.bottomButtonsTextStyle}
-          onPress={() => setOpen(true)}>
-          Schedule
-        </ElevatedCard>
-        <DatePicker
-          date={dateField.value || new Date()}
-          modal
-          open={open}
-          onCancel={() => setOpen(false)}
-          onConfirm={date => {
-            dateField.onChange(date);
-            setOpen(false);
-          }}
-        />
         <ElevatedCard
           textStyle={styles.bottomButtonsTextStyle}
           onPress={handleSubmit(onSubmit)}>
           Post
         </ElevatedCard>
       </View>
-      {dateField.value && (
-        <Text style={[styles.label, styles.textAlCenter]}>
-          {'Scheduled for: ' + formatDate(dateField.value)}
-        </Text>
-      )}
     </View>
   );
 };
@@ -159,7 +114,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
   },
-  w100: {width: '100%'},
+  w100: {width: '100%', minHeight: 200},
   screen: {
     flex: 1,
     backgroundColor: Colors.Background,

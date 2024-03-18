@@ -4,7 +4,9 @@ import {Colors} from '../../utils/colors';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type ScreenHeaderProps = {
-  children?: string;
+  children?: string | React.ReactNode;
+  leftItem?: React.ReactNode;
+  rightItem?: React.ReactNode;
 };
 
 const ScreenHeader = ({children}: ScreenHeaderProps) => {
@@ -12,7 +14,11 @@ const ScreenHeader = ({children}: ScreenHeaderProps) => {
 
   return (
     <View style={[styles.container, {paddingTop: insets.top + 15}]}>
-      <Text style={styles.text}>{children}</Text>
+      {typeof children === 'string' ? (
+        <Text style={styles.text}>{children}</Text>
+      ) : (
+        children
+      )}
     </View>
   );
 };
@@ -30,6 +36,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingTop: 10,
     paddingBottom: 10,
+    flexDirection: 'row',
   },
   text: {
     fontSize: 20,

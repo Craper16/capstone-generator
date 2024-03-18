@@ -5,6 +5,7 @@ import AnalyticsScreen from '../screens/analytics-screen';
 import Announcements from '../screens/announcements';
 import AddAnnouncements from '../screens/add-announcements';
 import UserAlertSystem from '../screens/user-alert-system';
+import Equipments from '../screens/equipments';
 
 export type HomeStackNavigatorParams = {
   HomeScreen: undefined;
@@ -12,6 +13,7 @@ export type HomeStackNavigatorParams = {
   Announcements: undefined;
   AddAnnouncements: undefined;
   UserAlertSystem: undefined;
+  Equipments: undefined;
 };
 
 const HomeStackNavigator = createStackNavigator<HomeStackNavigatorParams>();
@@ -36,6 +38,7 @@ export default function HomeStackNavigation() {
         name="UserAlertSystem"
         component={UserAlertSystem}
       />
+      <HomeStackNavigator.Screen name="Equipments" component={Equipments} />
     </HomeStackNavigator.Navigator>
   );
 }

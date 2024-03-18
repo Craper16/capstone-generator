@@ -3,6 +3,9 @@ import React from 'react';
 import Card from './card';
 import {Employee} from '../../screens/users-dashboard';
 import {Colors} from '../../utils/colors';
+import {useNavigation} from '@react-navigation/native';
+import {UsersStackNavigationParams} from '../../navigation/users-stack-navigation';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 type EmployeeListItemProps = {
   item: Employee;
@@ -10,15 +13,20 @@ type EmployeeListItemProps = {
 };
 
 const EmployeeListItem = ({item}: EmployeeListItemProps) => {
+  const navigation =
+    useNavigation<
+      StackNavigationProp<UsersStackNavigationParams, 'UsersDashboard'>
+    >();
+
   return (
-    <Card style={styles.cardContainer}>
+    <Card
+      style={styles.cardContainer}
+      onPress={() =>
+        navigation.navigate('EmployeeDetailsScreen', {employee: item})
+      }>
       <Text style={styles.text}>{item.name}</Text>
       <View style={styles.permContainer}>
-        {item.permissions.map(perm => (
-          <Text key={perm} style={styles.detailText}>
-            {perm}
-          </Text>
-        ))}
+        <Text style={styles.detailText}>{`$ ${item.salary}`}</Text>
       </View>
     </Card>
   );

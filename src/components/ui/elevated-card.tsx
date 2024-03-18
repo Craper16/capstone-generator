@@ -15,6 +15,7 @@ type ElevatedCardProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   onPress?: () => void;
+  innerContainerStyle?: StyleProp<ViewStyle>;
 };
 
 const ElevatedCard = ({
@@ -22,10 +23,11 @@ const ElevatedCard = ({
   style,
   onPress,
   textStyle,
+  innerContainerStyle,
 }: ElevatedCardProps) => {
   return (
     <Pressable style={[styles.container, style]} onPress={onPress}>
-      <View style={styles.bottomContainer}>
+      <View style={[styles.bottomContainer, innerContainerStyle]}>
         {typeof children === 'string' ? (
           <Text style={textStyle ?? styles.textStyle}>{children}</Text>
         ) : (

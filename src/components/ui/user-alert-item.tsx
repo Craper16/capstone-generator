@@ -1,6 +1,5 @@
 import {
   Alert as RNAlert,
-  Image,
   Pressable,
   StyleSheet,
   Text,
@@ -12,7 +11,7 @@ import {Colors} from '../../utils/colors';
 import {formatDate} from '../../utils/date-utils';
 import TextInput from './text-input';
 import {useForm} from 'react-hook-form';
-import {ImageStrings} from '../../assets/image-strings';
+import ElevatedCard from './elevated-card';
 
 type UserAlertItemProps = {
   item: Alert;
@@ -41,16 +40,20 @@ const UserAlertItem = ({item}: UserAlertItemProps) => {
 
     console.log(reply);
 
-    RNAlert.alert('Confirm?', 'Do you confirm your info aw shi hek??', [
-      {text: 'Cancel'},
-      {
-        text: 'Save',
-        onPress: () => {
-          setIsExpanded(false);
-          reset();
+    RNAlert.alert(
+      'Confirm?',
+      'Do you confirm your info aw shi hek? You Change this to whatever you want',
+      [
+        {text: 'Cancel'},
+        {
+          text: 'Save',
+          onPress: () => {
+            setIsExpanded(false);
+            reset();
+          },
         },
-      },
-    ]);
+      ],
+    );
   }
 
   return (
@@ -92,21 +95,31 @@ const UserAlertItem = ({item}: UserAlertItemProps) => {
               </Text>
             </View>
           </View>
-          <View>
-            <TextInput
-              control={control}
-              name="reply"
-              backgroundColor={Colors.White}
-              textColor={Colors.Black}
-              placeholder="Reply..."
-              multiline
-            />
-            <Pressable style={styles.selfEnd} onPress={handleSubmit(onSubmit)}>
-              <Image
-                source={{uri: ImageStrings.BlueCheckBox, height: 32, width: 32}}
+          {item?.open && (
+            <View>
+              <TextInput
+                control={control}
+                name="reply"
+                backgroundColor={Colors.White}
+                textColor={Colors.Black}
+                placeholder="Reply..."
+                multiline
               />
-            </Pressable>
-          </View>
+              {
+                //HERE YOU SHOULD HANDLE CLOSE / ASSIGN BASED ON WHAT URE RECEIVING FROM THE API
+              }
+              <View style={styles.closeOrSubmitElevatedButtonContainer}>
+                <ElevatedCard textStyle={styles.elButtonsText}>
+                  Close / Assign
+                </ElevatedCard>
+                <ElevatedCard
+                  textStyle={styles.elButtonsText}
+                  onPress={handleSubmit(onSubmit)}>
+                  Send
+                </ElevatedCard>
+              </View>
+            </View>
+          )}
         </>
       )}
     </Pressable>
@@ -116,9 +129,19 @@ const UserAlertItem = ({item}: UserAlertItemProps) => {
 export default UserAlertItem;
 
 const styles = StyleSheet.create({
+  elButtons: {},
+  elButtonsText: {color: Colors.White, fontWeight: '700', fontSize: 18},
+  closeOrSubmitElevatedButtonContainer: {
+    paddingTop: 25,
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   descriptionText: {top: 20},
   itemsContainer: {
     gap: 42,
+    padding: 10,
   },
   ownerUserText: {
     borderBottomWidth: 1,

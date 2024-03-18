@@ -34,7 +34,7 @@ export interface User {
   address: string;
   remark: string;
   plan: '10Amp' | '5Amp' | '2Amp' | '20Amp';
-  payment_type: 'fixed' | 'not_fixed';
+  payment_type: 'Fixed' | 'Not Fixed';
   profile_picture: string | null;
   date_joined: Date;
   phone_number: number;
@@ -59,7 +59,7 @@ export const DUMMY_USERS: User[] = [
     amount_to_pay: 100,
     name: 'Jamal',
     paid: 24,
-    payment_type: 'fixed',
+    payment_type: 'Fixed',
     plan: '10Amp',
     remark: 'Dummy fetch this from api',
     profile_picture: null,
@@ -73,7 +73,7 @@ export const DUMMY_USERS: User[] = [
     amount_to_pay: 200,
     name: 'Kalvin',
     paid: 200,
-    payment_type: 'fixed',
+    payment_type: 'Fixed',
     plan: '20Amp',
     remark: 'Dummy fetch this from api',
     profile_picture: null,
@@ -85,10 +85,10 @@ export const DUMMY_USERS: User[] = [
 export const DUMMY_EMPLOYEES: Employee[] = [
   {
     id: 1,
-    address: 'Yemkten bl neit',
+    address: 'Testing',
     name: 'Jeffrrey',
     permissions: ['admin', 'user', 'owner'],
-    remark: 'Soo hes gay',
+    remark: 'Soo Testing',
     salary: 1000,
     profile_picture: null,
     role: 'admin',
@@ -98,7 +98,7 @@ export const DUMMY_EMPLOYEES: Employee[] = [
     address: 'Yemkten bl neit',
     name: 'Jreeette',
     permissions: ['owner'],
-    remark: 'Soo hes gay okey',
+    remark: 'Soo Testing',
     salary: 2000,
     profile_picture: null,
     role: 'normal',

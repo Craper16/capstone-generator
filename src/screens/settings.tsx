@@ -4,6 +4,7 @@ import {Colors} from '../utils/colors';
 import ScreenHeader from '../components/ui/screen-header';
 import TextInput from '../components/ui/text-input';
 import {useForm} from 'react-hook-form';
+import ElevatedCard from '../components/ui/elevated-card';
 
 type SettingsForm = {
   bio: string;
@@ -17,18 +18,10 @@ const Settings = () => {
     defaultValues: {bio: '', password: '', phoneNum: '', username: ''},
   });
 
+  // HANDLE BUTTON PRESSES HOWEVER YOU WANT
   return (
     <View style={styles.screen}>
       <ScreenHeader>Settings</ScreenHeader>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Bio</Text>
-        <TextInput
-          control={control}
-          name="bio"
-          placeholder="Bio"
-          textColor={Colors.Black}
-        />
-      </View>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Change Username</Text>
         <TextInput
@@ -47,15 +40,25 @@ const Settings = () => {
           textColor={Colors.Black}
         />
       </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Change Phone num</Text>
-        <TextInput
-          control={control}
-          name="phoneNum"
-          placeholder="Phone number"
-          textColor={Colors.Black}
-        />
+      <View style={styles.actionButtons}>
+        <ElevatedCard textStyle={styles.elevatedButtonText}>
+          Sign Out
+        </ElevatedCard>
+        <ElevatedCard textStyle={styles.elevatedButtonText}>Save</ElevatedCard>
       </View>
+      <ScreenHeader>Danger Zone</ScreenHeader>
+      <ElevatedCard
+        style={styles.dangerZoneStyle}
+        innerContainerStyle={styles.dangerZoneElevatedButtonContainer}
+        textStyle={styles.elevatedButtonText}>
+        Delete Account
+      </ElevatedCard>
+      <ElevatedCard
+        style={styles.dangerZoneStyle}
+        innerContainerStyle={styles.dangerZoneElevatedButtonContainer}
+        textStyle={styles.elevatedButtonText}>
+        Delete all users
+      </ElevatedCard>
     </View>
   );
 };
@@ -63,6 +66,17 @@ const Settings = () => {
 export default Settings;
 
 const styles = StyleSheet.create({
+  dangerZoneStyle: {alignSelf: 'center'},
+  dangerZoneElevatedButtonContainer: {
+    backgroundColor: Colors.Red,
+  },
+  elevatedButtonText: {color: Colors.White, fontSize: 24, fontWeight: '700'},
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 25,
+  },
   label: {
     fontSize: 16,
     lineHeight: 16 * 1.2,

@@ -1,4 +1,4 @@
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import Card from './card';
 import {User} from '../../screens/users-dashboard';
@@ -10,9 +10,10 @@ import {UsersStackNavigationParams} from '../../navigation/users-stack-navigatio
 type UserListItemProps = {
   item: User;
   index: number;
+  isBilling?: boolean;
 };
 
-const UserListItem = ({item}: UserListItemProps) => {
+const UserListItem = ({item, isBilling}: UserListItemProps) => {
   const navigation =
     useNavigation<
       StackNavigationProp<UsersStackNavigationParams, 'UsersDashboard'>
@@ -25,9 +26,14 @@ const UserListItem = ({item}: UserListItemProps) => {
       style={styles.cardContainer}
       onPress={() => navigation.navigate('UserDetails', {user: item})}>
       <Text style={styles.text}>{item.name}</Text>
-      <Text style={styles.detailText}>
-        {isPending ? 'Payment Pending' : 'Paid'}
-      </Text>
+      {isBilling && (
+        <View
+          style={[
+            styles.isBillingView,
+            {backgroundColor: isPending ? Colors.Red : Colors.Green},
+          ]}
+        />
+      )}
     </Card>
   );
 };
@@ -35,6 +41,11 @@ const UserListItem = ({item}: UserListItemProps) => {
 export default UserListItem;
 
 const styles = StyleSheet.create({
+  isBillingView: {
+    height: 25,
+    width: 25,
+    borderRadius: 4,
+  },
   cardContainer: {
     paddingVertical: 10,
     flexDirection: 'row',

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import Card from './card';
 import WhiteCard from './white-card';
@@ -7,6 +7,7 @@ import DatePicker from 'react-native-date-picker';
 import {Colors} from '../../utils/colors';
 import {ControllerRenderProps} from 'react-hook-form';
 import {GeneratorForm} from '../../screens/generator-on-off';
+import {ImageStrings} from '../../assets/image-strings';
 
 type GeneratorTimingItemProps = {
   item: {
@@ -17,17 +18,23 @@ type GeneratorTimingItemProps = {
   index: number;
   field: ControllerRenderProps<GeneratorForm, 'timings'>;
   disabled?: boolean;
+  onDeletePress?: () => void;
+  isEditing?: boolean;
 };
 
 const GeneratorTimingItem = ({
   item,
   field,
   disabled,
+  onDeletePress,
+  isEditing,
 }: GeneratorTimingItemProps) => {
   const [timingOnOpen, setTimingOnOpen] = useState(false);
   const [timingOffOpen, setTimingOffOpen] = useState(false);
 
   console.log(timingOnOpen);
+
+  console.log(timingOnOpen, timingOffOpen);
 
   return (
     <>
@@ -60,6 +67,19 @@ const GeneratorTimingItem = ({
             </WhiteCard>
           </Card>
         </View>
+        {isEditing && (
+          <Pressable
+            onPress={() => {
+              if (onDeletePress) {
+                onDeletePress();
+              }
+            }}>
+            <Image
+              source={{uri: ImageStrings.TrashIcon, height: 21, width: 21}}
+              style={styles.trashImage}
+            />
+          </Pressable>
+        )}
       </Card>
       <DatePicker
         modal
@@ -72,6 +92,8 @@ const GeneratorTimingItem = ({
           let updatedField = field.value;
 
           updatedField[indx] = {...item, time_to_turn_on: date};
+
+          setTimingOnOpen(false);
 
           field.onChange([...updatedField]);
         }}
@@ -88,6 +110,8 @@ const GeneratorTimingItem = ({
 
           updatedField[indx] = {...item, time_to_turn_off: date};
 
+          setTimingOffOpen(false);
+
           field.onChange([...updatedField]);
         }}
       />
@@ -98,6 +122,10 @@ const GeneratorTimingItem = ({
 export default GeneratorTimingItem;
 
 const styles = StyleSheet.create({
+  trashImage: {
+    alignSelf: 'flex-end',
+    margin: 4,
+  },
   onOffText: {color: Colors.Black, fontSize: 24, fontWeight: '700'},
   onOffContainer: {gap: 10},
   timeToTurnOffAndOnTimeCard: {padding: 10, paddingHorizontal: 10},

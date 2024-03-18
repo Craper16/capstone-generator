@@ -16,14 +16,10 @@ import EmployeeListItem from '../components/ui/employee-list-item';
 import UserListItem from '../components/ui/user-list-item';
 import {StackScreenProps} from '@react-navigation/stack';
 import {UsersStackNavigationParams} from '../navigation/users-stack-navigation';
+import ScreenHeader from '../components/ui/screen-header';
 
-export const USERS_FILTERS = [
-  'Pending',
-  'Paid',
-  'Role',
-  'Date',
-  'Alphabetical',
-];
+export const USERS_FILTERS = ['Done', 'Not Done', 'Pending'];
+export const EMPLOYEE_FILTERS = ['Paid', 'Not Paid'];
 
 export interface User {
   id: number;
@@ -34,7 +30,7 @@ export interface User {
   address: string;
   remark: string;
   plan: '10Amp' | '5Amp' | '2Amp' | '20Amp';
-  payment_type: 'fixed' | 'not_fixed';
+  payment_type: 'Fixed' | 'Not Fixed';
   profile_picture: string | null;
   date_joined: Date;
   phone_number: number;
@@ -49,6 +45,7 @@ export interface Employee {
   salary: number;
   profile_picture: string | null;
   role: string;
+  date_joined: Date;
 }
 
 export const DUMMY_USERS: User[] = [
@@ -59,7 +56,7 @@ export const DUMMY_USERS: User[] = [
     amount_to_pay: 100,
     name: 'Test',
     paid: 24,
-    payment_type: 'fixed',
+    payment_type: 'Fixed',
     plan: '10Amp',
     remark: 'Remark',
     profile_picture: null,
@@ -73,7 +70,7 @@ export const DUMMY_USERS: User[] = [
     amount_to_pay: 200,
     name: 'Kalvin',
     paid: 200,
-    payment_type: 'fixed',
+    payment_type: 'Fixed',
     plan: '20Amp',
     remark: 'Dummy fetch this from api',
     profile_picture: null,
@@ -92,6 +89,7 @@ export const DUMMY_EMPLOYEES: Employee[] = [
     salary: 1000,
     profile_picture: null,
     role: 'admin',
+    date_joined: new Date(),
   },
   {
     id: 2,
@@ -102,6 +100,7 @@ export const DUMMY_EMPLOYEES: Employee[] = [
     salary: 2000,
     profile_picture: null,
     role: 'normal',
+    date_joined: new Date(),
   },
 ];
 
@@ -118,6 +117,8 @@ const UsersDashboard = ({navigation}: UsersDashboardProps) => {
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<string[]>([]);
+  const [employeeFilters, setEmployeeFilters] = useState<string[]>([]);
+  const [isBilling, setIsBilling] = useState(false);
 
   return (
     <View
@@ -126,13 +127,27 @@ const UsersDashboard = ({navigation}: UsersDashboardProps) => {
         Keyboard.dismiss();
       }}>
       <View style={styles.topItemsContainer}>
-        <View style={[styles.topTextContainer, {paddingTop: insets.top + 15}]}>
-          <Text style={styles.titleText}>
-            {usersType === 'users' ? 'Users' : 'Employees'}
+        <Pressable
+          onPress={() => setIsBilling(prevIsBilling => !prevIsBilling)}
+          style={[
+            styles.elevatedCardBillingStyle,
+            {marginTop: insets.top + 15},
+          ]}>
+          <Text style={styles.elevatedCardText}>
+            {isBilling ? 'Stop Billing' : 'Start Billing'}
           </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('AddUserOrEmployee', {})}
+          style={[styles.elevatedCardAddStyle, {marginTop: insets.top + 15}]}>
+          <Text style={styles.elevatedCardText}>ADD</Text>
+        </Pressable>
+        <View style={[styles.topTextContainer, {paddingTop: insets.top + 15}]}>
+          <ScreenHeader>
+            {usersType === 'users' ? 'Users' : 'Employees'}
+          </ScreenHeader>
         </View>
         <View style={styles.empUsersContainer}>
-          <View />
           <Card
             onPress={() => setUsersType('employees')}
             style={styles.cardContainer}
@@ -145,36 +160,57 @@ const UsersDashboard = ({navigation}: UsersDashboardProps) => {
             selected={usersType === 'users'}>
             <Text style={styles.text}>Users</Text>
           </Card>
-          <Pressable
-            onPress={() => navigation.navigate('AddUserOrEmployee', {})}>
-            <Text style={styles.addStyle}>+</Text>
-          </Pressable>
         </View>
         <SearchTextInput value={searchQuery} setValue={setSearchQuery} />
         <View style={styles.h10} />
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={USERS_FILTERS}
-          ItemSeparatorComponent={() => ListSeperator({horizontal: true})}
-          renderItem={({item}) => (
-            <Card
-              onPress={() => {
-                const alreadySelected = filters.find(fil => fil === item);
+        {usersType === 'users' ? (
+          <View style={styles.filtersContainer}>
+            {USERS_FILTERS.map(item => (
+              <Card
+                key={item}
+                onPress={() => {
+                  const alreadySelected = filters.find(fil => fil === item);
 
-                if (alreadySelected) {
-                  return setFilters(prevFilters => [
-                    ...prevFilters.filter(it => it !== item),
+                  if (alreadySelected) {
+                    return setFilters(prevFilters => [
+                      ...prevFilters.filter(it => it !== item),
+                    ]);
+                  }
+                  return setFilters(prevFilters => [...prevFilters, item]);
+                }}
+                selected={!!filters.find(fil => fil === item)}
+                style={styles.cardContainer}>
+                <Text style={styles.text}>{item}</Text>
+              </Card>
+            ))}
+          </View>
+        ) : (
+          <View style={styles.filtersContainer}>
+            {EMPLOYEE_FILTERS.map(item => (
+              <Card
+                key={item}
+                onPress={() => {
+                  const alreadySelected = employeeFilters.find(
+                    fil => fil === item,
+                  );
+
+                  if (alreadySelected) {
+                    return setEmployeeFilters(prevFilters => [
+                      ...prevFilters.filter(it => it !== item),
+                    ]);
+                  }
+                  return setEmployeeFilters(prevFilters => [
+                    ...prevFilters,
+                    item,
                   ]);
-                }
-                return setFilters(prevFilters => [...prevFilters, item]);
-              }}
-              selected={!!filters.find(fil => fil === item)}
-              style={styles.cardContainer}>
-              <Text style={styles.text}>{item}</Text>
-            </Card>
-          )}
-        />
+                }}
+                selected={!!employeeFilters.find(fil => fil === item)}
+                style={styles.cardContainer}>
+                <Text style={styles.text}>{item}</Text>
+              </Card>
+            ))}
+          </View>
+        )}
       </View>
       <View style={styles.h10} />
       <FlatList
@@ -185,7 +221,7 @@ const UsersDashboard = ({navigation}: UsersDashboardProps) => {
             return <EmployeeListItem {...props} />;
           }
 
-          return <UserListItem {...props} />;
+          return <UserListItem {...props} isBilling={isBilling} />;
         }}
         ItemSeparatorComponent={ListSeperator}
       />
@@ -196,6 +232,31 @@ const UsersDashboard = ({navigation}: UsersDashboardProps) => {
 export default UsersDashboard;
 
 const styles = StyleSheet.create({
+  elevatedCardText: {color: Colors.White, fontSize: 14, fontWeight: '700'},
+  elevatedCardBillingStyle: {
+    position: 'absolute',
+    padding: 5,
+    paddingHorizontal: 15,
+    left: 15,
+    borderRadius: 100,
+    backgroundColor: Colors.Blue,
+    zIndex: 200,
+  },
+  elevatedCardAddStyle: {
+    position: 'absolute',
+    padding: 5,
+    paddingHorizontal: 15,
+    right: 15,
+    borderRadius: 100,
+    backgroundColor: Colors.Blue,
+    zIndex: 200,
+  },
+  filtersContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
   h10: {height: 10},
   topItemsContainer: {paddingHorizontal: 15},
   text: {
@@ -225,8 +286,10 @@ const styles = StyleSheet.create({
     color: Colors.Black,
   },
   empUsersContainer: {
+    paddingVertical: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
+    gap: 15,
   },
 });

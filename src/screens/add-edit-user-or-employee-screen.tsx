@@ -15,28 +15,31 @@ import TextInput from '../components/ui/text-input';
 import {useController, useForm} from 'react-hook-form';
 import DropdownInput from '../components/ui/dropdown-input';
 import ElevatedCard from '../components/ui/elevated-card';
-import uuid from 'react-native-uuid';
 import {StackScreenProps} from '@react-navigation/stack';
 import {UsersStackNavigationParams} from '../navigation/users-stack-navigation';
+import {DUMMY_EQUIPMENT} from './owner-home-page';
 
 type AddUserOrEmployeeForm = {
   name: string;
-  type: 'user' | 'emplpoyee';
+  lastName: string;
+  username: string;
+  password: string;
+  type: 'Customer' | 'Employee';
   plan: '10Amp' | '20Amp' | '5Amp' | '2Amp' | null;
-  payment: 'fixed' | 'not_fixed' | null;
+  payment: 'Fixed' | 'Not Fixed';
   address: string;
-  remarks: string;
   generatedId: string;
   date: Date;
   salary: string;
   role: string;
+  equipment: string;
 };
 
-const USER_TYPES = ['user', 'employee'];
+const USER_TYPES = ['Customer', 'Employee'];
 
 const PLANS = ['10Amp', '5Amp', '2Amp', '20Amp'];
 
-const PAYMENTS = ['fixed', 'not_fixed'];
+const PAYMENTS = ['Fixed', 'Not Fixed'];
 
 const ROLES = ['admin', 'normal'];
 
@@ -49,8 +52,15 @@ const AddEditUserOrEmployeeScreen = ({
   navigation,
   route: {params},
 }: AddEditUserOrEmployeeScreenProps) => {
+  // PARAMS TO PREFILL
+  console.log(params, 'PARAMS');
   const {control, watch, handleSubmit} = useForm<AddUserOrEmployeeForm>({
     defaultValues: {
+      // PREFILL THESE AS YOU FETCH FROM YOUR API :)
+      // THESE SHOULD CHANGE WHEN YOU INTEGRATE FROM YOUR APIS
+      lastName: '',
+      password: '',
+      username: '',
       address: params.employee?.address || params.user?.address,
       date: new Date(),
       generatedId: params.employee?.id
@@ -59,10 +69,9 @@ const AddEditUserOrEmployeeScreen = ({
         ? params?.user.id?.toString()
         : '',
       name: params?.employee?.name || params.user?.name || '',
-      payment: params.user?.payment_type,
+      payment: params.user?.payment_type ?? 'Fixed',
       plan: params.user?.plan,
-      remarks: params.employee?.remark || params.user?.remark,
-      type: params?.employee ? 'emplpoyee' : 'user',
+      type: params?.employee ? 'Employee' : 'Customer',
       salary: params.employee?.salary ? params.employee.salary?.toString() : '',
       role: params.employee?.role ?? '',
     },
@@ -83,12 +92,11 @@ const AddEditUserOrEmployeeScreen = ({
     name,
     payment,
     plan,
-    remarks,
     type,
   }: AddUserOrEmployeeForm) {
     //HERE
 
-    console.log(address, date, generatedId, name, payment, remarks, plan, type);
+    console.log(address, date, generatedId, name, payment, plan, type);
 
     Alert.alert('Confirm?', 'Do you confirm your info aw shi hek??', [
       {text: 'Cancel'},
@@ -127,16 +135,44 @@ const AddEditUserOrEmployeeScreen = ({
           source={{uri: ImageStrings.ProfileIcon, height: 31, width: 31}}
           borderRadius={100}
         />
+      </View>
+      <View style={styles.personalDetailsContainer}>
         <TextInput
           control={control}
           name="name"
           defaultValue={''}
           backgroundColor={Colors.Blue}
           textColor={Colors.White}
-          placeholder="Full name..."
+          placeholder="Name"
+        />
+        <TextInput
+          control={control}
+          name="username"
+          defaultValue={''}
+          backgroundColor={Colors.Blue}
+          textColor={Colors.White}
+          placeholder="Username"
         />
       </View>
-      {watch('type') === 'user' ? (
+      <View style={styles.personalDetailsContainer}>
+        <TextInput
+          control={control}
+          name="lastName"
+          defaultValue={''}
+          backgroundColor={Colors.Blue}
+          textColor={Colors.White}
+          placeholder="Last Name"
+        />
+        <TextInput
+          control={control}
+          name="password"
+          defaultValue={''}
+          backgroundColor={Colors.Blue}
+          textColor={Colors.White}
+          placeholder="Password"
+        />
+      </View>
+      {watch('type') === 'Customer' ? (
         <>
           <View style={styles.fullNameTextInputContainer}>
             <Text style={styles.label}>Plan:</Text>
@@ -147,10 +183,20 @@ const AddEditUserOrEmployeeScreen = ({
               items={PLANS}
             />
             <DropdownInput
+              style={styles.z200}
               control={control}
               name="payment"
               placeholder="Payment"
               items={PAYMENTS}
+            />
+          </View>
+          <View style={styles.fullNameTextInputContainer}>
+            <Text style={styles.label}>Equipment:</Text>
+            <DropdownInput
+              control={control}
+              name="equipment"
+              placeholder="Equipment"
+              items={DUMMY_EQUIPMENT.map(eq => eq.name)}
             />
           </View>
         </>
@@ -186,25 +232,12 @@ const AddEditUserOrEmployeeScreen = ({
           placeholder="Address"
         />
       </View>
-      <View style={styles.fullNameTextInputContainer}>
-        <Text style={styles.label}>Remark:</Text>
-        <TextInput
-          textColor={Colors.Black}
-          control={control}
-          name="remarks"
-          placeholder="Remarks"
-        />
-      </View>
       <View style={styles.generateIdContainer}>
         <Text style={styles.idText}>{field.value}</Text>
         <ElevatedCard
-          onPress={() => {
-            const uid = uuid.v4();
-
-            field.onChange(uid);
-          }}
+          onPress={handleSubmit(onSubmit)}
           textStyle={styles.generateIdText}>
-          Generate ID
+          {params.user || params.employee ? 'Update Account' : 'Create Account'}
         </ElevatedCard>
       </View>
     </ScrollView>
@@ -214,12 +247,13 @@ const AddEditUserOrEmployeeScreen = ({
 export default AddEditUserOrEmployeeScreen;
 
 const styles = StyleSheet.create({
+  z200: {zIndex: 200},
   idText: {
     color: Colors.Black,
     fontSize: 12,
     lineHeight: 12 * 1.2,
   },
-  generateIdContainer: {flexDirection: 'row', justifyContent: 'flex-end'},
+  generateIdContainer: {flexDirection: 'row', justifyContent: 'center'},
   generateIdText: {
     fontSize: 24,
     lineHeight: 24 * 1.2,
@@ -247,4 +281,9 @@ const styles = StyleSheet.create({
   },
   screen: {flex: 1, backgroundColor: Colors.Background},
   contentContainerStyle: {paddingHorizontal: 15, gap: 25},
+  personalDetailsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
 });

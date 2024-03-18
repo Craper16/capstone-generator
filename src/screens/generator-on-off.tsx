@@ -17,13 +17,21 @@ export type GeneratorForm = {
 };
 
 const GeneratorOnOff = () => {
-  const {control} = useForm<GeneratorForm>({
+  const {control, handleSubmit} = useForm<GeneratorForm>({
     defaultValues: {kw_price: '', timings: [], equipment: null},
   });
 
   const [isEditing, setIsEditing] = useState(false);
 
   const {field} = useController({control, name: 'timings', defaultValue: []});
+
+  function onSubmit(data: GeneratorForm) {
+    //HERE
+    console.log(data);
+
+    //AA
+    setIsEditing(false);
+  }
 
   return (
     <View style={styles.screen}>
@@ -78,11 +86,37 @@ const GeneratorOnOff = () => {
         data={field.value}
         ItemSeparatorComponent={ListSeperator}
         renderItem={props => (
-          <GeneratorTimingItem {...props} field={field} disabled={!isEditing} />
+          <GeneratorTimingItem
+            {...props}
+            field={field}
+            disabled={!isEditing}
+            onDeletePress={() => {
+              let newArray: {
+                id: string;
+                time_to_turn_on: Date;
+                time_to_turn_off: Date;
+              }[] = [];
+
+              for (let i = 0; i < field.value.length; i++) {
+                if (i !== props.index) {
+                  newArray.push(props.item);
+                }
+              }
+
+              field.onChange(newArray);
+            }}
+            isEditing={isEditing}
+          />
         )}
       />
       <ElevatedCard
-        onPress={() => setIsEditing(prevIsEditing => !prevIsEditing)}
+        onPress={() => {
+          if (isEditing) {
+            handleSubmit(onSubmit)();
+          } else {
+            setIsEditing(prevIsEditing => !prevIsEditing);
+          }
+        }}
         textStyle={styles.elevatedCardTextStyle}
         style={styles.elevatedCardStyle}>
         {isEditing ? 'Save' : 'Edit'}

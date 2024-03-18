@@ -4,12 +4,14 @@ import UsersDashboard, {Employee, User} from '../screens/users-dashboard';
 import UserDetailsScreen from '../screens/user-details-screen';
 import AddEditUserOrEmployeeScreen from '../screens/add-edit-user-or-employee-screen';
 import BillingAfterChoosingUser from '../screens/billing-after-choosing-user';
+import EmployeeDetailsScreen from '../screens/employee-details-screen';
 
 export type UsersStackNavigationParams = {
   UsersDashboard: undefined;
   AddUserOrEmployee: {user?: User; employee?: Employee};
   UserDetails: {user: User};
   BillingAfterChoosingUser: {user: User};
+  EmployeeDetailsScreen: {employee: Employee};
 };
 
 const UsersStackNavigator = createStackNavigator<UsersStackNavigationParams>();
@@ -32,6 +34,10 @@ export default function UsersStackNavigation() {
       <UsersStackNavigator.Screen
         name="BillingAfterChoosingUser"
         component={BillingAfterChoosingUser}
+      />
+      <UsersStackNavigator.Screen
+        name="EmployeeDetailsScreen"
+        component={EmployeeDetailsScreen}
       />
     </UsersStackNavigator.Navigator>
   );

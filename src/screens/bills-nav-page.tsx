@@ -1,121 +1,120 @@
-import {
-  FlatList,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import {Colors} from '../utils/colors';
 import WhiteCard from '../components/ui/white-card';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Card from '../components/ui/card';
-import {BarChart} from 'react-native-gifted-charts';
-import {ImageStrings} from '../assets/image-strings';
-import AlertItem from '../components/alerts/alert-item';
 import ViewAll from '../components/ui/view-all';
 import {StackScreenProps} from '@react-navigation/stack';
-import {HomeStackNavigatorParams} from '../navigation/home-stack-navigation';
 import EquipmentItem from '../components/ui/equipment-item';
+import {BillingStackNavigatorParams} from '../navigation/billing-stack-navigation';
+import {DUMMY_EQUIPMENT} from './owner-home-page';
+import SubscriptionPlanItem from '../components/ui/subscription-plan-item';
+import ExpensesItem from '../components/ui/expenses-item';
+import {User} from './users-dashboard';
+import {DUMMY_USERS} from './billing-management';
+import BillsItem from '../components/ui/bills-item';
 
-export const DUMMY_ALERTS = [
-  {
-    id: 1,
-    user: {name: 'User'},
-    alert:
-      'Lorem ipsum dolor dolor dolor dolor samira bteklo dolor dolor dolor dolor',
-    date: new Date(),
-  },
-  {
-    id: 2,
-    user: {name: 'User'},
-    alert:
-      'Lorem ipsum dolor dolor dolor dolor samira bteklo dolor dolor dolor dolor',
-    date: new Date(),
-  },
-  {
-    id: 3,
-    user: {name: 'User'},
-    alert:
-      'Lorem ipsum dolor dolor dolor dolor samira bteklo dolor dolor dolor dolor',
-    date: new Date(),
-  },
-];
-
-export type Equipment = {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  status: 'Active' | 'Inactive';
-};
-
-export const DUMMY_EQUIPMENT: Equipment[] = [
-  {
-    description: 'Descriptionets',
-    id: 1,
-    name: 'Motor 1',
-    price: 200,
-    status: 'Active',
-  },
-  {
-    description: 'Descriptionets',
-    id: 2,
-    name: 'Motor 2',
-    price: 200,
-    status: 'Active',
-  },
-  {
-    description: 'Descriptionets',
-    id: 3,
-    name: 'Motor 3',
-    price: 200,
-    status: 'Active',
-  },
-  {
-    description: 'Descriptionets',
-    id: 4,
-    name: 'Motor 4',
-    price: 200,
-    status: 'Inactive',
-  },
-  {
-    description: 'Descriptionets',
-    id: 5,
-    name: 'Motor 5',
-    price: 300,
-    status: 'Active',
-  },
-  {
-    description: 'Descriptionets',
-    id: 6,
-    name: 'Motor 6',
-    price: 100,
-    status: 'Active',
-  },
-];
-
-type OwnerHomePageProps = StackScreenProps<
-  HomeStackNavigatorParams,
-  'HomeScreen'
+type BillsNavPageProps = StackScreenProps<
+  BillingStackNavigatorParams,
+  'BillsNavPage'
 >;
 
-const OwnerHomePage = ({navigation}: OwnerHomePageProps) => {
+export type Plan = {
+  id: number;
+  plan: string;
+  price: number;
+  date: Date;
+};
+
+export type Expense = {
+  id: number;
+  name: string;
+  amount: number;
+  description: string;
+  date: Date;
+};
+
+export type Bill = {
+  id: number;
+  user: User;
+  amount: number;
+  status: 'Paid' | 'Partial' | 'Pending';
+  date: Date;
+};
+
+export const NAMES = ['Simon', 'Jeoffrey', 'Barratheon', 'Linda', 'Stark'];
+
+export const DUMMY_PLANS: Plan[] = [
+  {id: 1, plan: '10Amp', price: 200, date: new Date()},
+  {id: 2, plan: '5Amp', price: 100, date: new Date()},
+  {id: 3, plan: '2Amp', price: 50, date: new Date()},
+  {id: 4, plan: '1Amp', price: 25, date: new Date()},
+];
+
+export const DUMMY_EXPENSES: Expense[] = [
+  {
+    id: 1,
+    amount: 400,
+    description: 'Description',
+    name: NAMES[0],
+    date: new Date(),
+  },
+  {
+    id: 2,
+    amount: 300,
+    description: 'Description',
+    name: NAMES[3],
+    date: new Date(),
+  },
+  {
+    id: 3,
+    amount: 200,
+    description: 'Description',
+    name: NAMES[2],
+    date: new Date(),
+  },
+  {
+    id: 4,
+    amount: 100,
+    description: 'Description',
+    name: NAMES[1],
+    date: new Date(),
+  },
+];
+
+export const DUMMY_BILLS: Bill[] = [
+  {
+    id: 1,
+    amount: 100,
+    date: new Date('2023-03-23'),
+    status: 'Paid',
+    user: DUMMY_USERS[0],
+  },
+  {
+    id: 2,
+    amount: 200,
+    date: new Date('2023-03-23'),
+    status: 'Paid',
+    user: DUMMY_USERS[0],
+  },
+  {
+    id: 3,
+    amount: 300,
+    date: new Date('2023-04-23'),
+    status: 'Paid',
+    user: DUMMY_USERS[0],
+  },
+  {id: 4, amount: 400, date: new Date(), status: 'Paid', user: DUMMY_USERS[0]},
+  {id: 5, amount: 500, date: new Date(), status: 'Paid', user: DUMMY_USERS[0]},
+];
+
+const BillsNavPage = ({navigation}: BillsNavPageProps) => {
   const insets = useSafeAreaInsets();
 
-  const [width, setWidth] = useState(0);
-
   const isPaid = false;
-  const barData = [
-    {value: 1.5, label: 'A', frontColor: '#3373a1'},
-    {value: 3, label: 'B', frontColor: '#e1812b'},
-    {value: 4.5, label: 'C', frontColor: '#3a923b'},
-    {value: 2, label: 'D', frontColor: '#bf3d3d'},
-    {value: 5, label: 'E', frontColor: '#9272b1'},
-  ];
 
+  // CHANGE DATA FROM API..
   return (
     <ScrollView
       contentContainerStyle={[
@@ -137,19 +136,29 @@ const OwnerHomePage = ({navigation}: OwnerHomePageProps) => {
           <Text style={styles.amountText}>{isPaid ? 'PAID' : '$ 100'}</Text>
         </WhiteCard>
       </View>
-      <Card
-        onLayout={({
-          nativeEvent: {
-            layout: {width: wid},
-          },
-        }) => {
-          setWidth(wid);
-        }}
-        onPress={() => navigation.navigate('AnalyticsScreen')}>
-        <Text style={styles.analyticsText}>Analytics</Text>
-        <Text style={styles.name}>Name</Text>
-        <BarChart data={barData} width={width - 120} maxValue={5} />
-      </Card>
+      <View>
+        <View style={styles.alertTitleContainer}>
+          <Text style={styles.alertTitle}>Subscription Plans</Text>
+          <View>
+            <View style={styles.h45} />
+          </View>
+        </View>
+        <Card style={styles.alertContainer}>
+          <WhiteCard variant="secondary">
+            <FlatList
+              contentContainerStyle={styles.flatlistContainer}
+              data={DUMMY_PLANS}
+              scrollEnabled={false}
+              renderItem={SubscriptionPlanItem}
+              ListFooterComponent={() =>
+                ViewAll({
+                  onPress: () => navigation.navigate('SubscriptionPlans'),
+                })
+              }
+            />
+          </WhiteCard>
+        </Card>
+      </View>
       <View>
         <View style={styles.alertTitleContainer}>
           <Text style={styles.alertTitle}>Equipments</Text>
@@ -173,20 +182,20 @@ const OwnerHomePage = ({navigation}: OwnerHomePageProps) => {
       </View>
       <View>
         <View style={styles.alertTitleContainer}>
-          <Text style={styles.alertTitle}>Employee Alerts</Text>
-          <Pressable onPress={() => navigation.navigate('UserAlertSystem')}>
-            <Image source={{uri: ImageStrings.Alert, height: 45, width: 45}} />
-          </Pressable>
+          <Text style={styles.alertTitle}>Bills</Text>
+          <View>
+            <View style={styles.h45} />
+          </View>
         </View>
         <Card style={styles.alertContainer}>
           <WhiteCard variant="secondary">
             <FlatList
               contentContainerStyle={styles.flatlistContainer}
-              data={DUMMY_ALERTS}
+              data={DUMMY_BILLS}
               scrollEnabled={false}
-              renderItem={AlertItem}
+              renderItem={BillsItem}
               ListFooterComponent={() =>
-                ViewAll({onPress: () => navigation.navigate('UserAlertSystem')})
+                ViewAll({onPress: () => navigation.navigate('Bills')})
               }
             />
           </WhiteCard>
@@ -194,41 +203,20 @@ const OwnerHomePage = ({navigation}: OwnerHomePageProps) => {
       </View>
       <View>
         <View style={styles.alertTitleContainer}>
-          <Text style={styles.alertTitle}>Customers Alerts</Text>
-          <Pressable onPress={() => navigation.navigate('UserAlertSystem')}>
-            <Image source={{uri: ImageStrings.Alert, height: 45, width: 45}} />
-          </Pressable>
+          <Text style={styles.alertTitle}>Expenses</Text>
+          <View>
+            <View style={styles.h45} />
+          </View>
         </View>
         <Card style={styles.alertContainer}>
           <WhiteCard variant="secondary">
             <FlatList
               contentContainerStyle={styles.flatlistContainer}
-              data={DUMMY_ALERTS}
+              data={DUMMY_EXPENSES}
               scrollEnabled={false}
-              renderItem={AlertItem}
+              renderItem={ExpensesItem}
               ListFooterComponent={() =>
-                ViewAll({onPress: () => navigation.navigate('UserAlertSystem')})
-              }
-            />
-          </WhiteCard>
-        </Card>
-      </View>
-      <View>
-        <View style={styles.alertTitleContainer}>
-          <Text style={styles.alertTitle}>Announcements</Text>
-          <Pressable onPress={() => navigation.navigate('Announcements')}>
-            <Image source={{uri: ImageStrings.Alert, height: 45, width: 45}} />
-          </Pressable>
-        </View>
-        <Card style={styles.alertContainer}>
-          <WhiteCard variant="secondary">
-            <FlatList
-              contentContainerStyle={styles.flatlistContainer}
-              data={DUMMY_ALERTS}
-              scrollEnabled={false}
-              renderItem={AlertItem}
-              ListFooterComponent={() =>
-                ViewAll({onPress: () => navigation.navigate('Announcements')})
+                ViewAll({onPress: () => navigation.navigate('Expenses')})
               }
             />
           </WhiteCard>
@@ -238,7 +226,7 @@ const OwnerHomePage = ({navigation}: OwnerHomePageProps) => {
   );
 };
 
-export default OwnerHomePage;
+export default BillsNavPage;
 
 const styles = StyleSheet.create({
   h45: {height: 45},

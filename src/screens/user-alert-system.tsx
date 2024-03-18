@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {Pressable, SectionList, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {Colors} from '../utils/colors';
 import ScreenHeader from '../components/ui/screen-header';
@@ -9,6 +9,8 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {HomeStackNavigatorParams} from '../navigation/home-stack-navigation';
 import {DUMMY_USERS, User} from './users-dashboard';
 import UserAlertItem from '../components/ui/user-alert-item';
+import SectionListHeader from '../components/ui/section-list-header';
+import CreateAlert from '../components/ui/create-alert';
 
 type UserAlertSystemProps = StackScreenProps<
   HomeStackNavigatorParams,
@@ -25,6 +27,7 @@ export type Alert = {
   urgent: boolean;
   title: string;
   date: Date;
+  open: boolean;
 };
 
 export const DUMMY_ALERTS: Alert[] = [
@@ -38,6 +41,7 @@ export const DUMMY_ALERTS: Alert[] = [
     user_description: 'Shou bed',
     title: 'Djontirrr',
     date: new Date(),
+    open: false,
   },
   {
     id: 2,
@@ -49,6 +53,7 @@ export const DUMMY_ALERTS: Alert[] = [
     user_description: 'Shou bed',
     title: 'Djontirrr',
     date: new Date(),
+    open: true,
   },
   {
     id: 3,
@@ -60,15 +65,40 @@ export const DUMMY_ALERTS: Alert[] = [
     user_description: 'Shou bed',
     title: 'Djontirrrdsa',
     date: new Date(),
+    open: false,
   },
 ];
+
+function formatAlertsForSectionList(alerts: Alert[]) {
+  const sections: {data: Alert[]; title: 'Open' | 'Closed'}[] = [
+    {data: [], title: 'Open'},
+    {data: [], title: 'Closed'},
+  ];
+
+  for (let i = 0; i < alerts.length; i++) {
+    const alert = alerts[i];
+
+    if (alert.open) {
+      sections[0].data.push(alert);
+    } else {
+      sections[1].data.push(alert);
+    }
+  }
+
+  return sections;
+}
 
 const UserAlertSystem = ({}: UserAlertSystemProps) => {
   const insets = useSafeAreaInsets();
 
+  const [isCreatingAlert, setIsCreatingAlert] = useState(false);
+
   const [usersType, setUsersType] = useState<'users' | 'employees'>('users');
   const [filter, setFilter] = useState<'urgent' | 'not_urgent' | null>(null);
 
+  const sections = formatAlertsForSectionList(DUMMY_ALERTS);
+
+  // DID NOT MAKE SENSE TO ADD FILTERS ON OPEN CLOSE I DID NOT ADD IT, IF YOU WANT TO ADD IT GO AHEAD BUT IT JUST DOESNT MAKE SENSE SINCE THE LIST IS ALREADY SEPERATED
   return (
     <View style={styles.screen}>
       <ScreenHeader>Alert System</ScreenHeader>
@@ -128,8 +158,25 @@ const UserAlertSystem = ({}: UserAlertSystemProps) => {
             <Text style={styles.historyTitle}>Not Urgent</Text>
           </Card>
         </View>
-        <FlatList
-          data={DUMMY_ALERTS}
+        <Pressable
+          style={styles.container}
+          onPress={() =>
+            setIsCreatingAlert(prevIsCreatingAlert => !prevIsCreatingAlert)
+          }>
+          <Text style={styles.text}>{'Create Alert'}</Text>
+        </Pressable>
+        <SectionList
+          sections={sections}
+          // eslint-disable-next-line react/no-unstable-nested-components
+          ListHeaderComponent={() =>
+            isCreatingAlert ? (
+              <>
+                <CreateAlert onSuccess={() => setIsCreatingAlert(false)} />
+              </>
+            ) : null
+          }
+          renderSectionHeader={SectionListHeader}
+          SectionSeparatorComponent={ListSeperator}
           ItemSeparatorComponent={ListSeperator}
           renderItem={props => <UserAlertItem {...props} />}
         />
@@ -141,6 +188,17 @@ const UserAlertSystem = ({}: UserAlertSystemProps) => {
 export default UserAlertSystem;
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    fontWeight: '700',
+    color: Colors.Black,
+    fontSize: 24,
+    lineHeight: 1.2 * 24,
+  },
   flatlistHeaderContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -170,6 +228,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 25,
     flex: 1,
+    gap: 20,
   },
   historyTitle: {
     color: Colors.Black,
