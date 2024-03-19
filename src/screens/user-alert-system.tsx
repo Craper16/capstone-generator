@@ -5,17 +5,11 @@ import ScreenHeader from '../components/ui/screen-header';
 import Card from '../components/ui/card';
 import ListSeperator from '../components/ui/list-seperator';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {StackScreenProps} from '@react-navigation/stack';
-import {HomeStackNavigatorParams} from '../navigation/home-stack-navigation';
 import {DUMMY_USERS, User} from './users-dashboard';
 import UserAlertItem from '../components/ui/user-alert-item';
 import SectionListHeader from '../components/ui/section-list-header';
 import CreateAlert from '../components/ui/create-alert';
-
-type UserAlertSystemProps = StackScreenProps<
-  HomeStackNavigatorParams,
-  'UserAlertSystem'
->;
+import {useUser} from '../storage/use-user';
 
 export type Alert = {
   id: number;
@@ -88,8 +82,10 @@ function formatAlertsForSectionList(alerts: Alert[]) {
   return sections;
 }
 
-const UserAlertSystem = ({}: UserAlertSystemProps) => {
+const UserAlertSystem = () => {
   const insets = useSafeAreaInsets();
+
+  const userType = useUser(state => state.type);
 
   const [isCreatingAlert, setIsCreatingAlert] = useState(false);
 
@@ -102,62 +98,66 @@ const UserAlertSystem = ({}: UserAlertSystemProps) => {
   return (
     <View style={styles.screen}>
       <ScreenHeader>Alert System</ScreenHeader>
-      <View style={styles.topItemsContainer}>
-        <Card
-          selected={usersType === 'employees'}
-          onPress={() => setUsersType('employees')}>
-          <Text style={styles.topItemText}>Employee</Text>
-        </Card>
-        <Card
-          selected={usersType === 'users'}
-          onPress={() => setUsersType('users')}>
-          <Text style={styles.topItemText}>Customer</Text>
-        </Card>
-      </View>
-      <View
-        style={[styles.historyContainer, {marginBottom: insets.bottom + 25}]}>
-        <View style={styles.flatlistHeaderContainer}>
+      {userType === 'owner' && (
+        <View style={styles.topItemsContainer}>
           <Card
-            selected={filter === 'urgent'}
-            style={[
-              styles.historyTextContainer,
-              {
-                backgroundColor:
-                  filter === 'urgent'
-                    ? Colors.LightBlue
-                    : Colors.SuperLightBlue,
-              },
-            ]}
-            onPress={() => {
-              if (filter === 'urgent') {
-                return setFilter(null);
-              }
-
-              return setFilter('urgent');
-            }}>
-            <Text style={styles.historyTitle}>Urgent</Text>
+            selected={usersType === 'employees'}
+            onPress={() => setUsersType('employees')}>
+            <Text style={styles.topItemText}>Employee</Text>
           </Card>
           <Card
-            selected={filter === 'not_urgent'}
-            style={[
-              styles.historyTextContainer,
-              {
-                backgroundColor:
-                  filter === 'not_urgent'
-                    ? Colors.LightBlue
-                    : Colors.SuperLightBlue,
-              },
-            ]}
-            onPress={() => {
-              if (filter === 'not_urgent') {
-                return setFilter(null);
-              }
-
-              return setFilter('not_urgent');
-            }}>
-            <Text style={styles.historyTitle}>Not Urgent</Text>
+            selected={usersType === 'users'}
+            onPress={() => setUsersType('users')}>
+            <Text style={styles.topItemText}>Customer</Text>
           </Card>
         </View>
+      )}
+      <View
+        style={[styles.historyContainer, {marginBottom: insets.bottom + 25}]}>
+        {userType !== 'customer' && (
+          <View style={styles.flatlistHeaderContainer}>
+            <Card
+              selected={filter === 'urgent'}
+              style={[
+                styles.historyTextContainer,
+                {
+                  backgroundColor:
+                    filter === 'urgent'
+                      ? Colors.LightBlue
+                      : Colors.SuperLightBlue,
+                },
+              ]}
+              onPress={() => {
+                if (filter === 'urgent') {
+                  return setFilter(null);
+                }
+
+                return setFilter('urgent');
+              }}>
+              <Text style={styles.historyTitle}>Urgent</Text>
+            </Card>
+            <Card
+              selected={filter === 'not_urgent'}
+              style={[
+                styles.historyTextContainer,
+                {
+                  backgroundColor:
+                    filter === 'not_urgent'
+                      ? Colors.LightBlue
+                      : Colors.SuperLightBlue,
+                },
+              ]}
+              onPress={() => {
+                if (filter === 'not_urgent') {
+                  return setFilter(null);
+                }
+
+                return setFilter('not_urgent');
+              }}>
+              <Text style={styles.historyTitle}>Not Urgent</Text>
+            </Card>
+          </View>
+        )}
         <Pressable
           style={styles.container}
           onPress={() =>

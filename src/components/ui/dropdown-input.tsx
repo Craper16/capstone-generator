@@ -60,7 +60,7 @@ function DropdownInput<T extends FieldValues, U>({
         ]}>
         {field.value ?? placeholder}
       </Text>
-      <Text style={styles.indicatorStyle}>{'>'}</Text>
+      {!disabled && <Text style={styles.indicatorStyle}>{'>'}</Text>}
       {isOpen && (
         <Card style={styles.containerTwo}>
           {items?.map((it, i) => (

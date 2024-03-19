@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Colors} from '../../utils/colors';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -7,13 +7,29 @@ type ScreenHeaderProps = {
   children?: string | React.ReactNode;
   leftItem?: React.ReactNode;
   rightItem?: React.ReactNode;
+  inverted?: boolean;
 };
 
-const ScreenHeader = ({children}: ScreenHeaderProps) => {
+const ScreenHeader = ({children, inverted}: ScreenHeaderProps) => {
   const insets = useSafeAreaInsets();
 
+  const borderStyle = useMemo(
+    () => ({
+      borderBottomWidth: inverted ? 0 : 1,
+      borderTopWidth: inverted ? 1 : 0,
+    }),
+    [inverted],
+  );
+
   return (
-    <View style={[styles.container, {paddingTop: insets.top + 15}]}>
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: insets.top + 15,
+        },
+        borderStyle,
+      ]}>
       {typeof children === 'string' ? (
         <Text style={styles.text}>{children}</Text>
       ) : (
@@ -30,8 +46,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('screen').width - 100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: 1,
     borderBottomColor: Colors.Black,
+    borderTopColor: Colors.Black,
     borderStyle: 'dashed',
     alignSelf: 'center',
     paddingTop: 10,

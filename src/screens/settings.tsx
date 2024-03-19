@@ -5,6 +5,7 @@ import ScreenHeader from '../components/ui/screen-header';
 import TextInput from '../components/ui/text-input';
 import {useForm} from 'react-hook-form';
 import ElevatedCard from '../components/ui/elevated-card';
+import {useUser} from '../storage/use-user';
 
 type SettingsForm = {
   bio: string;
@@ -14,14 +15,26 @@ type SettingsForm = {
 };
 
 const Settings = () => {
-  const {control} = useForm<SettingsForm>({
+  const {type: userType, signOut} = useUser(state => state);
+
+  // WRAP THE FUNCITON WITH HANDLESUBMIT
+  // handleSubmit(func)
+  // IF IN CALLBACK EXACMPLE: () =>
+  // You have to write it as () => handleSubmit(func)()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {control, handleSubmit} = useForm<SettingsForm>({
     defaultValues: {bio: '', password: '', phoneNum: '', username: ''},
   });
 
   // HANDLE BUTTON PRESSES HOWEVER YOU WANT
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function onSubmit(data: SettingsForm) {
+    // HERE
+    console.log(data);
+  }
   return (
     <View style={styles.screen}>
-      <ScreenHeader>Settings</ScreenHeader>
+      <ScreenHeader>Profile</ScreenHeader>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Change Username</Text>
         <TextInput
@@ -41,24 +54,30 @@ const Settings = () => {
         />
       </View>
       <View style={styles.actionButtons}>
-        <ElevatedCard textStyle={styles.elevatedButtonText}>
+        <ElevatedCard
+          onPress={() => signOut()}
+          textStyle={styles.elevatedButtonText}>
           Sign Out
         </ElevatedCard>
         <ElevatedCard textStyle={styles.elevatedButtonText}>Save</ElevatedCard>
       </View>
-      <ScreenHeader>Danger Zone</ScreenHeader>
-      <ElevatedCard
-        style={styles.dangerZoneStyle}
-        innerContainerStyle={styles.dangerZoneElevatedButtonContainer}
-        textStyle={styles.elevatedButtonText}>
-        Delete Account
-      </ElevatedCard>
-      <ElevatedCard
-        style={styles.dangerZoneStyle}
-        innerContainerStyle={styles.dangerZoneElevatedButtonContainer}
-        textStyle={styles.elevatedButtonText}>
-        Delete all users
-      </ElevatedCard>
+      {userType === 'owner' && (
+        <>
+          <ScreenHeader>Danger Zone</ScreenHeader>
+          <ElevatedCard
+            style={styles.dangerZoneStyle}
+            innerContainerStyle={styles.dangerZoneElevatedButtonContainer}
+            textStyle={styles.elevatedButtonText}>
+            Delete Account
+          </ElevatedCard>
+          <ElevatedCard
+            style={styles.dangerZoneStyle}
+            innerContainerStyle={styles.dangerZoneElevatedButtonContainer}
+            textStyle={styles.elevatedButtonText}>
+            Delete all users
+          </ElevatedCard>
+        </>
+      )}
     </View>
   );
 };

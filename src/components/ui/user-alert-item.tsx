@@ -12,6 +12,7 @@ import {formatDate} from '../../utils/date-utils';
 import TextInput from './text-input';
 import {useForm} from 'react-hook-form';
 import ElevatedCard from './elevated-card';
+import {useUser} from '../../storage/use-user';
 
 type UserAlertItemProps = {
   item: Alert;
@@ -23,6 +24,8 @@ type ReplyToAlertForm = {
 };
 
 const UserAlertItem = ({item}: UserAlertItemProps) => {
+  const userType = useUser(state => state.type);
+
   const {control, handleSubmit, reset} = useForm<ReplyToAlertForm>({
     defaultValues: {reply: ''},
   });
@@ -65,13 +68,15 @@ const UserAlertItem = ({item}: UserAlertItemProps) => {
           styles.titleContainer,
           isExpanded && titleContainerBottomWidth,
         ]}>
-        <Text
-          style={[
-            styles.exclamationMark,
-            {color: item.urgent ? Colors.Red : Colors.Black},
-          ]}>
-          !
-        </Text>
+        {userType !== 'customer' && (
+          <Text
+            style={[
+              styles.exclamationMark,
+              {color: item.urgent ? Colors.Red : Colors.Black},
+            ]}>
+            !
+          </Text>
+        )}
         <Text style={styles.text}>{item.title}</Text>
         <Text style={styles.text}>{formatDate(item.date)}</Text>
       </View>
@@ -110,7 +115,7 @@ const UserAlertItem = ({item}: UserAlertItemProps) => {
               }
               <View style={styles.closeOrSubmitElevatedButtonContainer}>
                 <ElevatedCard textStyle={styles.elButtonsText}>
-                  Close / Assign
+                  {userType === 'customer' ? 'Close' : 'Close / Assign'}
                 </ElevatedCard>
                 <ElevatedCard
                   textStyle={styles.elButtonsText}

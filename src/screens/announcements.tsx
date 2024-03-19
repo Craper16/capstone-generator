@@ -7,6 +7,7 @@ import {HomeStackNavigatorParams} from '../navigation/home-stack-navigation';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import AnnouncementListItem from '../components/ui/announcement-list-item';
 import ListSeperator from '../components/ui/list-seperator';
+import {useUser} from '../storage/use-user';
 
 export type Announcement = {
   id: number;
@@ -89,6 +90,8 @@ type AnnouncementsProps = StackScreenProps<
 >;
 
 const Announcements = ({navigation}: AnnouncementsProps) => {
+  const userType = useUser(state => state.type);
+
   const insets = useSafeAreaInsets();
 
   return (
@@ -98,11 +101,13 @@ const Announcements = ({navigation}: AnnouncementsProps) => {
         style={[styles.historyContainer, {marginBottom: insets.bottom + 25}]}>
         <View style={styles.historyTextContainer}>
           <Text style={styles.historyTitle}>History</Text>
-          <Pressable
-            style={styles.plusContainer}
-            onPress={() => navigation.navigate('AddAnnouncements')}>
-            <Text style={styles.historyTitle}>+</Text>
-          </Pressable>
+          {userType === 'owner' && (
+            <Pressable
+              style={styles.plusContainer}
+              onPress={() => navigation.navigate('AddAnnouncements')}>
+              <Text style={styles.historyTitle}>+</Text>
+            </Pressable>
+          )}
         </View>
         <FlatList
           data={DUMMY_ANNOUNCEMENTS}

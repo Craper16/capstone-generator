@@ -17,6 +17,7 @@ import UserListItem from '../components/ui/user-list-item';
 import {StackScreenProps} from '@react-navigation/stack';
 import {UsersStackNavigationParams} from '../navigation/users-stack-navigation';
 import ScreenHeader from '../components/ui/screen-header';
+import {useUser} from '../storage/use-user';
 
 export const USERS_FILTERS = ['Done', 'Not Done', 'Pending'];
 export const EMPLOYEE_FILTERS = ['Paid', 'Not Paid'];
@@ -112,9 +113,9 @@ type UsersDashboardProps = StackScreenProps<
 const UsersDashboard = ({navigation}: UsersDashboardProps) => {
   const insets = useSafeAreaInsets();
 
-  const [usersType, setUsersType] = useState<'users' | 'employees'>(
-    'employees',
-  );
+  const userType = useUser(state => state.type);
+
+  const [usersType, setUsersType] = useState<'users' | 'employees'>('users');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<string[]>([]);
   const [employeeFilters, setEmployeeFilters] = useState<string[]>([]);
@@ -148,12 +149,14 @@ const UsersDashboard = ({navigation}: UsersDashboardProps) => {
           </ScreenHeader>
         </View>
         <View style={styles.empUsersContainer}>
-          <Card
-            onPress={() => setUsersType('employees')}
-            style={styles.cardContainer}
-            selected={usersType === 'employees'}>
-            <Text style={styles.text}>Employees</Text>
-          </Card>
+          {userType === 'owner' && (
+            <Card
+              onPress={() => setUsersType('employees')}
+              style={styles.cardContainer}
+              selected={usersType === 'employees'}>
+              <Text style={styles.text}>Employees</Text>
+            </Card>
+          )}
           <Card
             onPress={() => setUsersType('users')}
             style={styles.cardContainer}

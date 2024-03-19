@@ -18,6 +18,7 @@ import ElevatedCard from '../components/ui/elevated-card';
 import {StackScreenProps} from '@react-navigation/stack';
 import {UsersStackNavigationParams} from '../navigation/users-stack-navigation';
 import {DUMMY_EQUIPMENT} from './owner-home-page';
+import {useUser} from '../storage/use-user';
 
 type AddUserOrEmployeeForm = {
   name: string;
@@ -54,6 +55,9 @@ const AddEditUserOrEmployeeScreen = ({
 }: AddEditUserOrEmployeeScreenProps) => {
   // PARAMS TO PREFILL
   console.log(params, 'PARAMS');
+
+  const userType = useUser(state => state.type);
+
   const {control, watch, handleSubmit} = useForm<AddUserOrEmployeeForm>({
     defaultValues: {
       // PREFILL THESE AS YOU FETCH FROM YOUR API :)
@@ -127,6 +131,7 @@ const AddEditUserOrEmployeeScreen = ({
           name="type"
           items={USER_TYPES}
           defaultValue={'user'}
+          disabled={userType === 'employee'}
         />
       </View>
       <Text style={styles.dateText}>Date (auto filled)</Text>
