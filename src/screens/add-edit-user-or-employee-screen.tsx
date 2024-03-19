@@ -12,7 +12,7 @@ import {Colors} from '../utils/colors';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ImageStrings} from '../assets/image-strings';
 import TextInput from '../components/ui/text-input';
-import {useController, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import DropdownInput from '../components/ui/dropdown-input';
 import ElevatedCard from '../components/ui/elevated-card';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -29,7 +29,6 @@ type AddUserOrEmployeeForm = {
   plan: '10Amp' | '20Amp' | '5Amp' | '2Amp' | null;
   payment: 'Fixed' | 'Not Fixed';
   address: string;
-  generatedId: string;
   date: Date;
   salary: string;
   role: string;
@@ -67,11 +66,6 @@ const AddEditUserOrEmployeeScreen = ({
       username: '',
       address: params.employee?.address || params.user?.address,
       date: new Date(),
-      generatedId: params.employee?.id
-        ? params.employee.id?.toString()
-        : params.user?.id
-        ? params?.user.id?.toString()
-        : '',
       name: params?.employee?.name || params.user?.name || '',
       payment: params.user?.payment_type ?? 'Fixed',
       plan: params.user?.plan,
@@ -81,18 +75,11 @@ const AddEditUserOrEmployeeScreen = ({
     },
   });
 
-  const {field} = useController({
-    control,
-    name: 'generatedId',
-    defaultValue: '',
-  });
-
   const insets = useSafeAreaInsets();
 
   function onSubmit({
     address,
     date,
-    generatedId,
     name,
     payment,
     plan,
@@ -100,7 +87,7 @@ const AddEditUserOrEmployeeScreen = ({
   }: AddUserOrEmployeeForm) {
     //HERE
 
-    console.log(address, date, generatedId, name, payment, plan, type);
+    console.log(address, date, name, payment, plan, type);
 
     Alert.alert('Confirm?', 'Do you confirm your info aw shi hek??', [
       {text: 'Cancel'},
@@ -238,7 +225,6 @@ const AddEditUserOrEmployeeScreen = ({
         />
       </View>
       <View style={styles.generateIdContainer}>
-        <Text style={styles.idText}>{field.value}</Text>
         <ElevatedCard
           onPress={handleSubmit(onSubmit)}
           textStyle={styles.generateIdText}>

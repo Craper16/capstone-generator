@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     color: Colors.Black,
     fontWeight: '700',
     paddingVertical: 15,
+    fontSize: 10,
   },
   screen: {flex: 1, backgroundColor: Colors.Background, gap: 25},
   dummyView: {height: 200},

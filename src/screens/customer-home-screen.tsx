@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
-  profitText: {fontSize: 16},
-  amountText: {fontWeight: '400', fontSize: 24},
+  profitText: {fontSize: 14, color: Colors.Black},
+  amountText: {fontWeight: '400', fontSize: 14, color: Colors.Black},
   amountContainer: {
     marginTop: 15,
   },

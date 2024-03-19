@@ -196,8 +196,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '700',
     color: Colors.Black,
-    fontSize: 24,
-    lineHeight: 1.2 * 24,
+    fontSize: 18,
+    lineHeight: 1.2 * 18,
   },
   flatlistHeaderContainer: {
     flexDirection: 'row',
@@ -233,8 +233,8 @@ const styles = StyleSheet.create({
   historyTitle: {
     color: Colors.Black,
     fontWeight: '700',
-    fontSize: 24,
-    lineHeight: 24 * 1.2,
+    fontSize: 18,
+    lineHeight: 18 * 1.2,
   },
   historyTextContainer: {
     alignItems: 'center',

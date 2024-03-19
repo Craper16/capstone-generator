@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 25,
     color: Colors.Black,
-    fontSize: 50,
+    fontSize: 42,
     fontWeight: '700',
     left: 0,
     top: -25,

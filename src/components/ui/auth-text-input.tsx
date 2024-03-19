@@ -36,6 +36,8 @@ function AuthTextInput<T extends FieldValues>({
         keyboardType={keyboardType}
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
+        placeholderTextColor={Colors.Gray}
+        autoCapitalize="none"
       />
     </View>
   );
@@ -51,6 +53,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     paddingHorizontal: 15,
     transform: [{translateY: -7}],
+    color: Colors.Black,
   },
   textInputContainer: {
     backgroundColor: Colors.Blue,

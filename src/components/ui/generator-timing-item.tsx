@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     margin: 4,
   },
-  onOffText: {color: Colors.Black, fontSize: 24, fontWeight: '700'},
+  onOffText: {color: Colors.Black, fontSize: 18, fontWeight: '700'},
   onOffContainer: {gap: 10},
   timeToTurnOffAndOnTimeCard: {padding: 10, paddingHorizontal: 10},
   text: {color: Colors.Black, fontSize: 20, fontWeight: '700'},
