@@ -25,21 +25,21 @@ export const DUMMY_ALERTS = [
     id: 1,
     user: {name: 'User'},
     alert:
-      'Lorem ipsum dolor dolor dolor dolor samira bteklo dolor dolor dolor dolor',
+      'Lorem ipsum dolor dolor dolor dolor dolor dolor dolor dolor',
     date: new Date(),
   },
   {
     id: 2,
     user: {name: 'User'},
     alert:
-      'Lorem ipsum dolor dolor dolor dolor samira bteklo dolor dolor dolor dolor',
+      'Lorem ipsum dolor dolor dolor dolor dolor dolor dolor dolor',
     date: new Date(),
   },
   {
     id: 3,
     user: {name: 'User'},
     alert:
-      'Lorem ipsum dolor dolor dolor dolor samira bteklo dolor dolor dolor dolor',
+      'Lorem ipsum dolor dolor dolor dolor  dolor dolor dolor dolor',
     date: new Date(),
   },
 ];
